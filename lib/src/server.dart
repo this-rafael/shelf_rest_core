@@ -5,10 +5,11 @@ import 'package:modular_shelf/modular_shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:shelf/shelf_io.dart' as io;
 
-class Server {
+class ShelfServer {
   final ShelfApp Function(Router) app;
   final Router router;
-  Server(this.app) : router = Router();
+  final Future<void> Function()? configSingletons;
+  ShelfServer(this.app, {this.configSingletons}) : router = Router();
 
   FutureOr<void> start({
     required String address,
@@ -17,6 +18,10 @@ class Server {
     int? backlog,
     bool shared = false,
   }) async {
+    if(configSingletons != null){
+      await configSingletons!();
+    }
+
     await app(router).mount();
     final httpServer = await io.serve(
       router,
@@ -26,5 +31,7 @@ class Server {
       shared: shared,
       securityContext: securityContext,
     );
+
+    print('server run on: http://$address:$port');
   }
 }

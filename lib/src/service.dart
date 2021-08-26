@@ -11,7 +11,7 @@ abstract class Service {
     required this.flowController,
   });
 
-  ShelfRequestResponse2JsonUtility<T> get<T extends IConvertToJson>() {
+  ShelfRequestResponse2JsonUtility<T> getConverter<T extends IConvertToJson>() {
     final converter = converters[T];
     return converter as ShelfRequestResponse2JsonUtility<T>;
   }
